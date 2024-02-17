@@ -8,6 +8,8 @@ const userSchema = new Schema ({
     recovery_email: {type: String, required: true},
     phone: {type: String, required: true},
     password: {type: String, required: true},
+
+    confirmEmailToken: {type: String}
 }, 
 {timestamps: true},
 )

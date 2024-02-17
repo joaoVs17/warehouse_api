@@ -1,17 +1,25 @@
 import { Folder as FolderModel } from "../models/Folder";
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 
 const FolderController = {
 
     create: async(req: Request, res: Response) => {
 
         try {
-            const { name, owner_id, parent} = req.body
+            const { name, parent } = req.body
+
+            const owner_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId; 
+
+            owner_id._id = req.body.owner_id;
 
             const folder = {
                 name,
                 owner: owner_id,
-                parent: '',
+                metadata: {
+                    parent,
+                }
+
             }
     
             const response = await FolderModel.create(folder);

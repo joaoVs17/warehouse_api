@@ -1,9 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 
-const fileSchema = new Schema ({
+const FileSchema = new Schema ({
     name: {type: String, required: true},
 
     key: {type: String, required: true},
+
+    url: {type: String, required: true}, 
 
     folder: {type: Schema.Types.ObjectId, ref:"Folder", required: true},
 
@@ -25,6 +27,6 @@ const fileSchema = new Schema ({
 },
 {timestamps: true})
 
-const File = mongoose.model('File', fileSchema);
+const File = mongoose.model('File', FileSchema);
 
-export { File }
+export { File, FileSchema }

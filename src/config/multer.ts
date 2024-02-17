@@ -12,9 +12,9 @@ const multerConfig = {
             crypto.randomBytes(16, (err:any, hash:any)=> {
                 if (err) cb(err);
 
-                const fileName = `${hash.toString('hex')}-${file.originalname}`;
+                file.key = `${hash.toString('hex')}-${file.originalname}`;
 
-                cb(null, fileName);
+                cb(null, file.key);
             })
         }
     }),

@@ -1,8 +1,10 @@
 import multer from "multer";
 
-import {Router} from "express";
+import { Router } from "express";
 import { router as usersRouter } from "./users";
-import {multerConfig} from "../config/multer";
+import { router as foldersRouter} from './folder';
+import { router as authRouter } from './auth';
+import { multerConfig } from "../config/multer";
 
 const router = Router();
 
@@ -14,5 +16,8 @@ router.post("/posts", multer(multerConfig).single("file"), (req: any, res: any)=
 })
 
 router.use('/', usersRouter);
+router.use('/', foldersRouter);
+router.use('/', authRouter);
+
 
 export { router };

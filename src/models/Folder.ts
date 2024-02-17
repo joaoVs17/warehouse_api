@@ -1,12 +1,16 @@
 import mongoose, { Schema } from "mongoose";
+import { FileSchema } from "./File";
 
-const folderSchema = new Schema ({
+const FolderSchema = new Schema ({
 
     name: {type: String, required: true},
     
-    files: {type: Array},
+    files: {type: [FileSchema]},
 
-    folders: {type: Array},
+    folders: {
+        type: Schema.Types.ObjectId,
+        ref: 'Folder',
+    },
 
     owner: {
         type: Schema.Types.ObjectId,
@@ -17,7 +21,7 @@ const folderSchema = new Schema ({
     metadata : {
         type: {
             isPersonal: {type: Boolean, required: true, default: true},
-            parent: {type: String, required: true},
+            parent: {type: String, default: null},
             starred: {type: Boolean, required: true, default: false},
             createdAt: {type: Date, default: Date.now}
         }
@@ -27,6 +31,6 @@ const folderSchema = new Schema ({
     timestamps: true,
 })
 
-const Folder = mongoose.model('Folder', folderSchema);
+const Folder = mongoose.model('Folder', FolderSchema);
 
-export { Folder, folderSchema }
+export { Folder, FolderSchema }
