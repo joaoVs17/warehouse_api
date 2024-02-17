@@ -1,18 +1,30 @@
 import express from 'express'
+import cors from 'cors';
 
-import { Router, Request, Response } from 'express';
+import { router } from './routes/router';
 
 const app = express();
 
-const route = Router()
-
-app.use(express.json())
-
-route.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'hello world with Typescript' })
-})
-
-app.use(route)
+//DB SETUP
+const conn = require('./db/conn');
+conn();
 
 
-app.listen(3333, () => 'server running on port 3333')
+//middlewares
+app.use(cors());
+
+app.use(express.urlencoded({
+    extended: true,
+}))
+
+app.use(express.json());
+
+//PORT
+const PORT = 3000;
+
+//routes
+app.use('/api', router);
+
+
+//app listen
+app.listen(PORT, () => 'server running')

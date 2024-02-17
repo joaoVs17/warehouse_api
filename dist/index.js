@@ -5,11 +5,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express_2 = require("express");
+const cors = require('cors');
 const app = (0, express_1.default)();
 const route = (0, express_2.Router)();
+//DB SETUP
+const conn = require('./db/conn');
+conn();
+//middlewares
+app.use(cors());
+app.use(express_1.default.urlencoded({
+    extended: true,
+}));
 app.use(express_1.default.json());
-route.get('/', (req, res) => {
-    res.json({ message: 'hello world with Typescript' });
-});
-app.use(route);
-app.listen(3333, () => 'server running on port 3333');
+//PORT
+const PORT = 3000;
+//routes
+const routes = require('./routes/router');
+app.use('/api', routes);
+//app listen
+app.listen(PORT, () => 'server running');
