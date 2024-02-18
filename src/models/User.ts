@@ -13,14 +13,6 @@ const userSchema = new Schema <UserInterface> ({
     confirmEmailToken: {type: String}
 }, {
     timestamps: true,
-    versionKey: false,
-    id: true,
-    toJSON: {
-        transform(_, ret) {
-            ret.id = ret._id
-            delete ret._id
-        }
-    }
 })
 
 const User = mongoose.model<UserInterface>('User', userSchema);

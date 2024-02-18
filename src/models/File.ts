@@ -27,14 +27,6 @@ const FileSchema = new Schema ({
     }
 }, {
     timestamps: true,
-    versionKey: false,
-    id: true,
-    toJSON: {
-        transform(_, ret) {
-            ret.id = ret._id
-            delete ret._id
-        }
-    }
 })
 
 const File = mongoose.model('File', FileSchema);

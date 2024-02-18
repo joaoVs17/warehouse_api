@@ -3,6 +3,7 @@ import { User as UserModel, userSchema } from "../models/User";
 import { Folder as FolderModel } from "../models/Folder";
 import crypto from 'crypto';
 import bcrypt from "bcrypt";
+import environment from "../environment";
 import jwt from 'jsonwebtoken';
 
 const UserController = {
@@ -88,16 +89,12 @@ const UserController = {
                 res.status(422).json({msg: "Wrong Password or Email"})
             }
 
-            
+            const secret = environment.SECRET;
+            const token = jwt.sign ({
+                id: user!._id
+            }, secret!)
 
-            if (process.env.SECRET) {
-                const secret = process.env.SECRET;
-                const token = jwt.sign ({
-                    id: user!._id
-                }, secret!)
-    
-                res.status(200).json({token,msg: "User logged in sucessfully"});
-            }
+            res.status(200).json({token,msg: "User logged in sucessfully"});
 
 
         } catch (err: any) {

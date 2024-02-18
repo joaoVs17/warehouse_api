@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express'
 import { UserController } from "../controllers/UserController";
 
 import jwt from 'jsonwebtoken';
-import { jwtDecode } from 'jwt-decode';
+import environment from '../environment';
 
 const router = Router();
 
@@ -17,16 +17,12 @@ function checkToken(req: Request, res: Response, next: NextFunction) {
 
     try {
         
-        if (process.env.SECRET) {
 
-            const secret = process.env.SECRET;
+        const secret = environment.SECRET;
 
-            jwt.verify(token, secret);
-    
-            next();
+        jwt.verify(token, secret);
 
-        }
-
+        next();
 
     } catch(err: any) {
         res.status(400).json({msg: "Token invalid"});

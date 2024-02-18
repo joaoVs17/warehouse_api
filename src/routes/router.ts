@@ -19,6 +19,7 @@ router.post("/posts", multer(multerConfig).single("file"), (req: any, res: any)=
 router.use('/', usersRouter);
 router.use('/', foldersRouter);
 router.use('/', authRouter);
+router.use('/', fileRouter);
 
 
 export { router };

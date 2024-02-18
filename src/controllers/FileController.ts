@@ -1,7 +1,9 @@
-import mongoose from "mongoose";
+import mongoose, {Schema} from "mongoose";
 
 import { Request, Response } from "express";
 import { File as FileModel } from "../models/File";
+import { Folder as FolderModel } from "../models/Folder"
+import { User as UserModel } from "../models/User";
 
 const FileController = {
 
@@ -9,18 +11,18 @@ const FileController = {
 
         try {
             
-            const { parent } = req.body;
+            const { parent, owner_id, folder_id } = req.body;
 
             const { originalname: name, size, mimetype, filename, path} = req.file as Express.Multer.File;
 
-            const owner_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId;
-
-            owner_id._id = req.body.owner_id;
+            const ownerID = await UserModel.findById(owner_id);
+            const folderID = await FolderModel.findById(folder_id);
 
             const file = {
                 name,
                 key: filename,
-                owner: owner_id,
+                owner: ownerID?._id,
+                folder: folderID?._id,
                 url: path,
                 metadata: {
                     parent,
