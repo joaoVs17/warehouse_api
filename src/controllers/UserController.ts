@@ -73,7 +73,6 @@ const UserController = {
 
             const user = await UserModel.findOne({email: email});
             
-            console.log(typeof user);
 
             if (!user) {
                 res.status(404).json({msg: "User not found"});
@@ -83,8 +82,13 @@ const UserController = {
                 res.status(422).json({msg: "Password is required"})
             }
 
+            const passwordMatch = await bcrypt.compare(password, user?.password || '') ;
 
+            if (!passwordMatch) {
+                res.status(422).json({msg: "Wrong Password or Email"})
+            }
 
+            
 
             if (process.env.SECRET) {
                 const secret = process.env.SECRET;
