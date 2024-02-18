@@ -9,7 +9,9 @@ const FileController = {
 
         try {
             
-            const { name, key, parent } = req.body;
+            const { parent } = req.body;
+
+            const { originalname: name, size, mimetype, filename, path} = req.file as Express.Multer.File;
 
             const owner_id: mongoose.Types.ObjectId = new mongoose.Types.ObjectId;
 
@@ -17,10 +19,13 @@ const FileController = {
 
             const file = {
                 name,
-                key,
+                key: filename,
                 owner: owner_id,
+                url: path,
                 metadata: {
                     parent,
+                    size,
+                    mimetype,
                 }
 
             }
@@ -60,8 +65,10 @@ const FileController = {
                 res.status(404).json({msg: "File not found"});
             }
 
-            if (file?.owner._id != owner_id ){
-                res.status(404).json({msg: "Can't delete file"})
+            if (file) {
+                if (file.owner?._id != owner_id ){
+                    res.status(404).json({msg: "Can't delete file"})
+                }
             }
 
             const response = FileModel.findByIdAndDelete(id);
@@ -75,3 +82,5 @@ const FileController = {
     }
 
 } 
+
+export { FileController }

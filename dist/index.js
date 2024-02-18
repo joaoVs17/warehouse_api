@@ -4,15 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const express_2 = require("express");
-const cors = require('cors');
+const cors_1 = __importDefault(require("cors"));
+const router_1 = require("./routes/router");
 const app = (0, express_1.default)();
-const route = (0, express_2.Router)();
 //DB SETUP
 const conn = require('./db/conn');
 conn();
 //middlewares
-app.use(cors());
+app.use((0, cors_1.default)());
 app.use(express_1.default.urlencoded({
     extended: true,
 }));
@@ -20,7 +19,6 @@ app.use(express_1.default.json());
 //PORT
 const PORT = 3000;
 //routes
-const routes = require('./routes/router');
-app.use('/api', routes);
+app.use('/api', router_1.router);
 //app listen
 app.listen(PORT, () => 'server running');

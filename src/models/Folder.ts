@@ -29,6 +29,14 @@ const FolderSchema = new Schema ({
     
 }, {
     timestamps: true,
+    versionKey: false,
+    id: true,
+    toJSON: {
+        transform(_, ret) {
+            ret.id = ret._id
+            delete ret._id
+        }
+    }
 })
 
 const Folder = mongoose.model('Folder', FolderSchema);

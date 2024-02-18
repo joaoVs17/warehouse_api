@@ -4,6 +4,7 @@ import { Router } from "express";
 import { router as usersRouter } from "./users";
 import { router as foldersRouter} from './folder';
 import { router as authRouter } from './auth';
+import { router as fileRouter } from './files';
 import { multerConfig } from "../config/multer";
 
 const router = Router();

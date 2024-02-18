@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { User as UserModel } from "../models/User";
+import { User as UserModel, userSchema } from "../models/User";
 import { Folder as FolderModel } from "../models/Folder";
 import crypto from 'crypto';
 import bcrypt from "bcrypt";
-import environment from "../config"
 import jwt from 'jsonwebtoken';
 
 const UserController = {
@@ -13,7 +12,6 @@ const UserController = {
         const { first_name, last_name, email, recovery_email, phone, password, confirmPassword} = req.body;
 
         try {
-
             //Validate
             if (!first_name) {
                 return res.status(422).json({msg: "First name is required"});
@@ -75,6 +73,8 @@ const UserController = {
 
             const user = await UserModel.findOne({email: email});
             
+            console.log(typeof user);
+
             if (!user) {
                 res.status(404).json({msg: "User not found"});
             }
@@ -83,19 +83,18 @@ const UserController = {
                 res.status(422).json({msg: "Password is required"})
             }
 
-            const passwordMatch = await bcrypt.compare(password, user!.password)
 
-            if (!passwordMatch) {
-                res.status(422).json({msg: "Wrong Password or Email"})
+
+
+            if (process.env.SECRET) {
+                const secret = process.env.SECRET;
+                const token = jwt.sign ({
+                    id: user!._id
+                }, secret!)
+    
+                res.status(200).json({token,msg: "User logged in sucessfully"});
             }
 
-            //dotenv.config({path: "../.env"});
-            const secret = environment.SECRET;
-            const token = jwt.sign ({
-                id: user!._id
-            }, secret!)
-
-            res.status(200).json({token,msg: "User logged in sucessfully"});
 
         } catch (err: any) {
             console.log(err);

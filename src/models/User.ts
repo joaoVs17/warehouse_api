@@ -10,9 +10,17 @@ const userSchema = new Schema ({
     password: {type: String, required: true},
 
     confirmEmailToken: {type: String}
-}, 
-{timestamps: true},
-)
+}, {
+    timestamps: true,
+    versionKey: false,
+    id: true,
+    toJSON: {
+        transform(_, ret) {
+            ret.id = ret._id
+            delete ret._id
+        }
+    }
+})
 
 const User = mongoose.model('User', userSchema);
 
