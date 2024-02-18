@@ -48,14 +48,6 @@ const FolderSchema = new mongoose_1.Schema({
     },
 }, {
     timestamps: true,
-    versionKey: false,
-    id: true,
-    toJSON: {
-        transform(_, ret) {
-            ret.id = ret._id;
-            delete ret._id;
-        }
-    }
 });
 exports.FolderSchema = FolderSchema;
 const Folder = mongoose_1.default.model('Folder', FolderSchema);

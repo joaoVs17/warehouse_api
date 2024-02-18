@@ -35,14 +35,6 @@ const userSchema = new mongoose_1.Schema({
     confirmEmailToken: { type: String }
 }, {
     timestamps: true,
-    versionKey: false,
-    id: true,
-    toJSON: {
-        transform(_, ret) {
-            ret.id = ret._id;
-            delete ret._id;
-        }
-    }
 });
 exports.userSchema = userSchema;
 const User = mongoose_1.default.model('User', userSchema);

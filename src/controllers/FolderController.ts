@@ -35,7 +35,7 @@ const FolderController = {
 
         try {
             const response = await FolderModel.find();
-            res.json({response});
+            res.json({response, msg: ''});
         } catch (err: any) {
             console.log(err);
         }
@@ -51,7 +51,7 @@ const FolderController = {
             const folder = await FolderModel.findById(id);
 
             if (!folder) {
-                res.status(404).json({msg: "Folder not Found"});
+                res.status(404).json({response: {} ,msg: "Folder not Found"});
             }
 
             const response = await FolderModel.findByIdAndDelete(id);

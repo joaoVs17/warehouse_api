@@ -1,6 +1,14 @@
-import mongoose, { Schema } from "mongoose";
+import fs from 'fs';
+import path from "path";
 
-const FileSchema = new Schema ({
+import { promisify } from "util";
+import mongoose, { Schema, CallbackWithoutResultAndOptionalError  } from "mongoose";
+import { FileInterface } from '../interfaces/file.interface';
+import { NextFunction } from 'express';
+import { nextTick } from 'process';
+import { UserInterface } from '../interfaces/user.interface';
+
+const FileSchema = new Schema<FileInterface> ({
     name: {type: String, required: true},
 
     key: {type: String, required: true},
@@ -29,6 +37,6 @@ const FileSchema = new Schema ({
     timestamps: true,
 })
 
-const File = mongoose.model('File', FileSchema);
+const File = mongoose.model<FileInterface>('File', FileSchema);
 
 export { File, FileSchema }

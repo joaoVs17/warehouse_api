@@ -47,14 +47,6 @@ const FileSchema = new mongoose_1.Schema({
     }
 }, {
     timestamps: true,
-    versionKey: false,
-    id: true,
-    toJSON: {
-        transform(_, ret) {
-            ret.id = ret._id;
-            delete ret._id;
-        }
-    }
 });
 exports.FileSchema = FileSchema;
 const File = mongoose_1.default.model('File', FileSchema);

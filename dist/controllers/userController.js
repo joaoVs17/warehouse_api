@@ -17,6 +17,7 @@ const User_1 = require("../models/User");
 const Folder_1 = require("../models/Folder");
 const crypto_1 = __importDefault(require("crypto"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const environment_1 = __importDefault(require("../environment"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const UserController = {
     create: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -70,20 +71,21 @@ const UserController = {
                 res.status(422).json({ msg: "Email is required" });
             }
             const user = yield User_1.User.findOne({ email: email });
-            console.log(typeof user);
             if (!user) {
                 res.status(404).json({ msg: "User not found" });
             }
             if (!password) {
                 res.status(422).json({ msg: "Password is required" });
             }
-            if (process.env.SECRET) {
-                const secret = process.env.SECRET;
-                const token = jsonwebtoken_1.default.sign({
-                    id: user._id
-                }, secret);
-                res.status(200).json({ token, msg: "User logged in sucessfully" });
+            const passwordMatch = yield bcrypt_1.default.compare(password, (user === null || user === void 0 ? void 0 : user.password) || '');
+            if (!passwordMatch) {
+                res.status(422).json({ msg: "Wrong Password or Email" });
             }
+            const secret = environment_1.default.SECRET;
+            const token = jsonwebtoken_1.default.sign({
+                id: user._id
+            }, secret);
+            res.status(200).json({ token, msg: "User logged in sucessfully" });
         }
         catch (err) {
             console.log(err);

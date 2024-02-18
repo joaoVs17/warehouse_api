@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors';
+import path from "path";
 
 import { router } from './routes/router';
 
@@ -24,6 +25,7 @@ const PORT = 3000;
 
 //routes
 app.use('/api', router);
+app.use('/api/files', express.static(path.resolve(__dirname, '..', 'tmp', 'uploads')));
 
 
 //app listen

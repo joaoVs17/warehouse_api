@@ -15,29 +15,29 @@ const UserController = {
         try {
             //Validate
             if (!first_name) {
-                return res.status(422).json({msg: "First name is required"});
+                return res.status(422).json({response: {}, msg: "First name is required"});
             }
             if (!last_name) {
-                return res.status(422).json({msg: "Last name is required"});
+                return res.status(422).json({response: {}, msg: "Last name is required"});
             }
             if (!email) {
-                return res.status(422).json({msg: "Email is required"});
+                return res.status(422).json({response: {}, msg: "Email is required"});
             }
             if (!password) {
-                return res.status(422).json({msg: "Password is required"})
+                return res.status(422).json({response: {}, msg: "Password is required"})
             }
             if (!confirmPassword) {
-                return res.status(422).json({msg: "Confirm password is required"})
+                return res.status(422).json({response: {}, msg: "Confirm password is required"})
             }
 
             if (password !== confirmPassword) {
-                return res.status(422).json({msg: "Passwords don't match"})
+                return res.status(422).json({response: {}, msg: "Passwords don't match"})
             }
 
             const userExists = await UserModel.findOne({email: email});
 
             if (userExists) {
-                res.status(422).json({msg: "This email already exists"});
+                res.status(422).json({response: {}, msg: "This email already exists"});
             }
     
             const salt = await bcrypt.genSalt(12);
@@ -69,24 +69,24 @@ const UserController = {
         try {
 
             if (!email) {
-                res.status(422).json({msg: "Email is required"})
+                res.status(422).json({response: {}, msg: "Email is required"})
             }
 
             const user = await UserModel.findOne({email: email});
             
 
             if (!user) {
-                res.status(404).json({msg: "User not found"});
+                res.status(404).json({response: {}, msg: "User not found"});
             }
 
             if (!password) {
-                res.status(422).json({msg: "Password is required"})
+                res.status(422).json({response: {}, msg: "Password is required"})
             }
 
             const passwordMatch = await bcrypt.compare(password, user?.password || '') ;
 
             if (!passwordMatch) {
-                res.status(422).json({msg: "Wrong Password or Email"})
+                res.status(422).json({response: {}, msg: "Wrong Password or Email"})
             }
 
             const secret = environment.SECRET;
@@ -111,7 +111,7 @@ const UserController = {
             const user = await UserModel.findById(id, '-password');
 
             if (!user) {
-                res.status(404).json({msg: "User not found"});
+                res.status(404).json({response: {}, msg: "User not found"});
             }
 
             res.status(200).json({user});
@@ -126,7 +126,7 @@ const UserController = {
         
         try {
             const response = await UserModel.find();
-            res.json({response})
+            res.json({response, msg: '' })
         } catch(err) {
             console.log(err);
         }
@@ -141,7 +141,7 @@ const UserController = {
             const user = await UserModel.findById(id);
 
             if(!user) {
-                res.status(404).json({msg: "User not found"});
+                res.status(404).json({response: {}, msg: "User not found"});
                 return;
             }
 
@@ -162,13 +162,13 @@ const UserController = {
             const confirmEmailToken = req.params.token;
             
             if (!confirmEmailToken) {
-                res.status(422).json({msg: 'Token is required'})
+                res.status(422).json({response: {}, msg: 'Token is required'})
             }
 
             const user = await UserModel.findOne({confirmEmailToken: confirmEmailToken});
 
             if (!user) {
-                res.status(422).json({msg: 'User not found'})
+                res.status(422).json({response: {}, msg: 'User not found'})
             }
 
             const response = await UserModel.findOneAndUpdate({confirmEmailToken:confirmEmailToken}, {confirmEmailToken: null});

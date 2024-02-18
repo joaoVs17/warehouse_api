@@ -15,17 +15,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FileController = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const File_1 = require("../models/File");
+const Folder_1 = require("../models/Folder");
+const User_1 = require("../models/User");
 const FileController = {
     create: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const { parent } = req.body;
+            const { parent, owner_id, folder_id } = req.body;
             const { originalname: name, size, mimetype, filename, path } = req.file;
-            const owner_id = new mongoose_1.default.Types.ObjectId;
-            owner_id._id = req.body.owner_id;
+            const ownerID = yield User_1.User.findById(owner_id);
+            const folderID = yield Folder_1.Folder.findById(folder_id);
             const file = {
                 name,
                 key: filename,
-                owner: owner_id,
+                owner: ownerID === null || ownerID === void 0 ? void 0 : ownerID._id,
+                folder: folderID === null || folderID === void 0 ? void 0 : folderID._id,
                 url: path,
                 metadata: {
                     parent,

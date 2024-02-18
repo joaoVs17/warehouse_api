@@ -1,12 +1,13 @@
 ###
-POST http://localhost:3000/api/users
+POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
     "first_name": "João Vitor",
     "last_name": "Simão",
-    "email": "joao@email.com",
+    "email": "joao3@email.com",
     "recovery_email": "pai@email.com",
     "phone": "(xx) xxxxx-xxxx",
-    "password": "123"
+    "password": "123",
+    "confirmPassword": "123"
 }

@@ -7,6 +7,7 @@ exports.checkToken = exports.router = void 0;
 const express_1 = require("express");
 const UserController_1 = require("../controllers/UserController");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const environment_1 = __importDefault(require("../environment"));
 const router = (0, express_1.Router)();
 exports.router = router;
 function checkToken(req, res, next) {
@@ -16,11 +17,9 @@ function checkToken(req, res, next) {
         return res.status(401).json({ msg: "Token is required" });
     }
     try {
-        if (process.env.SECRET) {
-            const secret = process.env.SECRET;
-            jsonwebtoken_1.default.verify(token, secret);
-            next();
-        }
+        const secret = environment_1.default.SECRET;
+        jsonwebtoken_1.default.verify(token, secret);
+        next();
     }
     catch (err) {
         res.status(400).json({ msg: "Token invalid" });
