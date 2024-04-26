@@ -25,7 +25,7 @@ const PORT = 3000;
 
 //routes
 app.use('/api', router);
-app.use('/api/files', express.static(path.resolve(__dirname, '..', 'tmp', 'uploads')));
+app.use('/api/files/thumbs', express.static(path.resolve(__dirname, '..', 'tmp', 'uploads')));
 
 
 //app listen

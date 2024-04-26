@@ -1,16 +1,23 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+
+interface sharedWith {
+    user: Schema.Types.ObjectId,
+    permissions: string[],
+}
 
 export interface FileInterface {
 
     name: string;
     key: string;
-    url: string;
-    folder: mongoose.Schema.Types.ObjectId;
-    owner: mongoose.Schema.Types.ObjectId;
+    thumbKey?: string;
+    folder: Schema.Types.ObjectId;
+    owner: Schema.Types.ObjectId;
+    sharedWith: sharedWith[];
     metadata: {
         mimetype: string;
-        parent: string;
-        starred: boolean;
+        parent: Schema.Types.ObjectId;
+        starred: boolean;   
+        trashed: boolean;
         personalFile: boolean;
         size: number;
         createdAt: Date;

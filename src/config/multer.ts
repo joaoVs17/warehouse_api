@@ -59,4 +59,4 @@ const multerConfig = {
     }
 }
 
-export { multerConfig }
+export { multerConfig };

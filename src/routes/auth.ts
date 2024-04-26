@@ -12,5 +12,8 @@ router.route('/auth/login').post(async(req: Request, res: Response) => {
 router.route('/auth/confirmEmail/:token').put(async(req: Request, res: Response) => {
     UserController.confirmEmail(req, res);
 })
+router.route('/auth/validateToken').post(async (req: Request, res: Response) => {
+    UserController.validateToken(req, res);
+})
 
 export { router };

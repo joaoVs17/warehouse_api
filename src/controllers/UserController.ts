@@ -10,34 +10,41 @@ const UserController = {
 
     create: async (req: Request, res: Response) => {
         
-        const { first_name, last_name, email, recovery_email, phone, password, confirmPassword} = req.body;
+        const { first_name, last_name, email, recovery_email, password, confirm_password} = req.body;
 
         try {
             //Validate
             if (!first_name) {
-                return res.status(422).json({response: {}, msg: "First name is required"});
+                res.status(422).json({response: {}, msg: "First name is required"});
+                return;
             }
             if (!last_name) {
-                return res.status(422).json({response: {}, msg: "Last name is required"});
+                res.status(422).json({response: {}, msg: "Last name is required"});
+                return;
             }
             if (!email) {
-                return res.status(422).json({response: {}, msg: "Email is required"});
+                res.status(422).json({response: {}, msg: "Email is required"});
+                return;
             }
             if (!password) {
-                return res.status(422).json({response: {}, msg: "Password is required"})
+                res.status(422).json({response: {}, msg: "Password is required"});
+                return;
             }
-            if (!confirmPassword) {
-                return res.status(422).json({response: {}, msg: "Confirm password is required"})
+            if (!confirm_password) {
+                res.status(422).json({response: {}, msg: "Confirm password is required"});
+                return;
             }
 
-            if (password !== confirmPassword) {
-                return res.status(422).json({response: {}, msg: "Passwords don't match"})
+            if (password !== confirm_password) {
+                res.status(422).json({response: {}, msg: "Passwords don't match"});
+                return;
             }
 
             const userExists = await UserModel.findOne({email: email});
 
             if (userExists) {
                 res.status(422).json({response: {}, msg: "This email already exists"});
+                return;
             }
     
             const salt = await bcrypt.genSalt(12);
@@ -48,14 +55,13 @@ const UserController = {
                 last_name,
                 email,
                 recovery_email,
-                phone,
                 password: passwordHash,
                 confirmEmailToken: crypto.randomBytes(16).toString('hex'),
             }
             
             const response = await UserModel.create(user);
 
-            res.status(201).json({response, msg: "User Created Successfully"});
+            return res.status(201).json({response, msg: "User Created Successfully"});
 
         } catch (err) {
             console.log(err);
@@ -74,9 +80,12 @@ const UserController = {
 
             const user = await UserModel.findOne({email: email});
             
-
             if (!user) {
                 res.status(404).json({response: {}, msg: "User not found"});
+            }
+
+            if (user?.confirmEmailToken) {
+                res.status(422).json({response: {}, msg: "Email not confirmed"});
             }
 
             if (!password) {
@@ -94,7 +103,15 @@ const UserController = {
                 id: user!._id
             }, secret!)
 
-            res.status(200).json({token,msg: "User logged in sucessfully"});
+            res.status(200).json({response: {
+                token, 
+                userId: user?._id, 
+                first_name: user?.first_name, 
+                last_name: user?.last_name, 
+                email: user?.email, 
+                root_folder: user?.root_folder, 
+                recovery_email: user?.recovery_email
+            }, msg: "User logged in sucessfully"});
 
 
         } catch (err: any) {
@@ -163,28 +180,64 @@ const UserController = {
             
             if (!confirmEmailToken) {
                 res.status(422).json({response: {}, msg: 'Token is required'})
+                return;
             }
 
             const user = await UserModel.findOne({confirmEmailToken: confirmEmailToken});
 
             if (!user) {
-                res.status(422).json({response: {}, msg: 'User not found'})
+                res.status(422).json({response: {}, msg: 'User not found'});
+                return;
             }
 
-            const response = await UserModel.findOneAndUpdate({confirmEmailToken:confirmEmailToken}, {confirmEmailToken: null});
+            await UserModel.findOneAndUpdate({confirmEmailToken:confirmEmailToken}, {confirmEmailToken: null});
+
 
             const folder = {
                 name: 'Root',
-                owner: response?._id,
+                owner: user?._id,
             }
 
             const responseFolder = await FolderModel.create(folder);
             
+            await UserModel.findOneAndUpdate({_id: user?._id}, {root_folder: responseFolder._id.toString()});
+
+            const response = await UserModel.findOne({_id : user?._id});
+
             res.status(200).json({response, msg: "Email confirmed sucessfully"});
 
         } catch(err: any) {
             console.log(err);
         }
+    },
+
+    validateToken: async(req: Request, res: Response) => {
+
+        try {
+
+            const { token } = req.body;
+
+            if (!token) {
+                return res.status(422).json({response: {}, msg: 'Token is required'})
+            }
+            
+            try {
+                const secret = environment.SECRET;
+                jwt.verify(token, secret);
+
+                return res.status(200).json({isValid: true, msg: 'Token valid'});
+
+            } catch(err) {
+
+                return res.status(400).json({isValid: false, msg: 'Token invalid'});
+            
+            }
+            
+
+        } catch(err) {
+            console.log(err);
+        }
+
 
     }
 
